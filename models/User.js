@@ -1,23 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true, 
-        trim: true 
-    },
-    password: {
-        type: String,
-        required: true
-    }
+	username: {
+		type: String,
+		required: true,
+		unique: true,
+	},
+	email: {
+		type: String,
+		required: true,
+		unique: true,
+		lowercase: true,
+		trim: true,
+	},
+	password: {
+		type: String,
+		required: true,
+	},
+	enrolledCourses: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Course", // Reference to the Course model
+		},
+	],
 });
 
 // Export the User model
-module.exports = mongoose.model('User ', UserSchema);
+module.exports = mongoose.model("User ", UserSchema);
