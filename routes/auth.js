@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
-
+require('dotenv').config();
 // Sign Up
 router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
@@ -39,8 +39,8 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // Check if user exists
-        const user = await User.findOne({ username });
+        // Check if user exists by username or email
+        const user = await User.findOne({ $or: [{ username }, { email: username }] });
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -54,10 +54,18 @@ router.post('/login', async (req, res) => {
         // Generate JWT
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.json({ token });
+        res.json({
+            message: 'Login successful',
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
     } catch (error) {
+        console.error('Login error:', error); // Log the error
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 module.exports = router;
