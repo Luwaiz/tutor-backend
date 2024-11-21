@@ -10,6 +10,10 @@ const CourseSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    courseDescription: {
+        type: String,
+        required: true,
+    },
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User", // Reference to the User who uploaded the course
