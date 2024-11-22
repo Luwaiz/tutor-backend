@@ -5,6 +5,7 @@ require("dotenv").config();
 const express = require("express");
 const authRoutes = require("./routes/auth");
 const courseRoutes = require("./routes/course");
+const quizRoutes = require("./routes/quiz");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MongoUri = process.env.MONGO_URI;
@@ -14,6 +15,7 @@ app.use(cors())
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
+app.use("/api/quizzes", quizRoutes);
 
 
 // Basic route
