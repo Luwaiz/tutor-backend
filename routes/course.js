@@ -8,10 +8,25 @@ const router = express.Router();
 
 // Endpoint to upload a new course
 router.post("/upload", authenticateJWT, async (req, res) => {
-	const { courseName, hours, courseDescription, lessons, content } = req.body;
+	const {
+		courseName,
+		hours,
+		courseDescription,
+		lessons,
+		content,
+		category, // Include category in request body
+	} = req.body;
 
 	// The user who uploads the course is retrieved from the authenticated token
 	const uploadedBy = req.user.id;
+
+	// Define allowed categories
+	const validCategories = ["Sciences", "Literature", "Tech", "Others"];
+
+	// Validate the category
+	if (!validCategories.includes(category)) {
+		return res.status(400).json({ message: "Invalid category" });
+	}
 
 	try {
 		// Create and save the course
@@ -22,6 +37,7 @@ router.post("/upload", authenticateJWT, async (req, res) => {
 			lessons,
 			content,
 			courseDescription,
+			category, // Save the category
 		});
 
 		await newCourse.save();
@@ -35,6 +51,7 @@ router.post("/upload", authenticateJWT, async (req, res) => {
 		res.status(500).json({ message: "Server error", error });
 	}
 });
+
 // Endpoint to get all courses
 router.get("/allCourses", authenticateJWT, async (req, res) => {
 	try {
@@ -148,5 +165,23 @@ router.post("/:courseId/quiz", authenticateJWT, async (req, res) => {
 	}
   });
   
+  router.get("/category/:category", async (req, res) => {
+	try {
+		const { category } = req.params;
+
+		// Validate category
+		const validCategories = ["Sciences", "Literature", "Tech", "Others"];
+		if (!validCategories.includes(category)) {
+			return res.status(400).json({ error: "Invalid category" });
+		}
+
+		const courses = await Course.find({ category });
+
+		res.status(200).json(courses);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Failed to fetch courses by category" });
+	}
+});
 
 module.exports = router;

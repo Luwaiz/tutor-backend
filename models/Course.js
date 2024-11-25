@@ -31,7 +31,13 @@ const CourseSchema = new mongoose.Schema(
 			},
 		],
 		quizzes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }], // New field
+		category: {
+			type: String,
+			enum: ["Sciences", "Literature", "Tech", "Others"], // Allowed categories
+			required: true,
+		},
 	},
+
 	{ timestamps: true }
 ); // Automatically add createdAt and updatedAt fields
 
