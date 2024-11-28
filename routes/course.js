@@ -1,7 +1,8 @@
 const express = require("express");
 const Course = require("../models/Course");
-const User = require("../models/User");
 const Quiz = require("../models/Quiz");
+const QuizResult = require('../models/QuizResult');
+const updateProgress = require('../middleware/UpgradeProgress'); 
 const authenticateJWT = require("../middleware/AuthenticateJWT");
 
 const router = express.Router();
@@ -181,6 +182,23 @@ router.post("/:courseId/quiz", authenticateJWT, async (req, res) => {
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: "Failed to fetch courses by category" });
+	}
+});
+
+
+router.post('/api/quiz-result', async (req, res) => {
+	const { studentId, courseId, category, score } = req.body;
+
+	try {
+		// Save the quiz result
+		await QuizResult.create({ studentId, courseId, category, score });
+
+		// Update the student's progress in the category
+		await updateProgress(studentId, category);
+
+		res.status(200).json({ message: 'Quiz result saved and progress updated.' });
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to save quiz result or update progress.' });
 	}
 });
 

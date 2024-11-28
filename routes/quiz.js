@@ -73,4 +73,5 @@ router.get("/quiz/:quizId", authenticateJWT, async (req, res) => {
   }
 });
 
+
 module.exports = router;

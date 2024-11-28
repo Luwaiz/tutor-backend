@@ -91,4 +91,28 @@ router.get('/user', authenticateJWT, async (req, res) => {
     }
 });
 
+// GET /api/progress/:studentId
+router.get("/progress/:studentId", async (req, res) => {
+    const { studentId } = req.params;
+
+    try {
+        // Fetch the user's progress data
+        const user = await User.findById(studentId, "categoriesProgress username email");
+
+        if (!user) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        // Return the progress data
+        res.json({
+            message: "Progress retrieved successfully",
+            username: user.username,
+            email: user.email,
+            categoriesProgress: user.categoriesProgress,
+        });
+    } catch (error) {
+        console.error("Error retrieving progress:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 module.exports = router;
