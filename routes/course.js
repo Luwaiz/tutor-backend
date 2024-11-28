@@ -186,7 +186,7 @@ router.post("/:courseId/quiz", authenticateJWT, async (req, res) => {
 });
 
 
-router.post('/api/quiz-result', async (req, res) => {
+router.post('/quiz-result', async (req, res) => {
 	const { studentId, courseId, category, score } = req.body;
 
 	try {
