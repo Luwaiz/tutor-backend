@@ -92,10 +92,10 @@ router.get('/user', authenticateJWT, async (req, res) => {
 });
 
 // GET /api/progress/:studentId
-router.get("/progress/:studentId", async (req, res) => {
-    const { studentId } = req.params;
-
-    try {
+router.get("/progress",authenticateJWT, async (req, res) => {
+	
+	try {
+		const studentId = req.user.id
         // Fetch the user's progress data
         const user = await User.findById(studentId, "categoriesProgress username email");
 
