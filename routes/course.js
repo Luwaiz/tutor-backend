@@ -187,20 +187,24 @@ router.post("/:courseId/quiz", authenticateJWT, async (req, res) => {
 });
 
 
-router.post('/quiz-result', async (req, res) => {
-	const { studentId, courseId, category, score } = req.body;
+router.post('/quiz-result', authenticateJWT, async (req, res) => {
+    const { courseId, category, score } = req.body;
 
-	try {
-		// Save the quiz result
-		await QuizResult.create({ studentId, courseId, category, score });
+    try {
+        // Retrieve the user ID from the JWT (set by authenticateJWT middleware)
+        const studentId = req.user.id;
 
-		// Update the student's progress in the category
-		await updateProgress(studentId, category);
+        // Save the quiz result
+        await QuizResult.create({ studentId, courseId, category, score });
 
-		res.status(200).json({ message: 'Quiz result saved and progress updated.' });
-	} catch (error) {
-		res.status(500).json({ error: 'Failed to save quiz result or update progress.' });
-	}
+        // Update the student's progress in the category
+        await updateProgress(studentId, category);
+
+        res.status(200).json({ message: 'Quiz result saved and progress updated.' });
+    } catch (error) {
+        console.error('Error saving quiz result or updating progress:', error);
+        res.status(500).json({ error: 'Failed to save quiz result or update progress.' });
+    }
 });
 
 module.exports = router;
