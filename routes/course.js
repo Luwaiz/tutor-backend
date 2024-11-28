@@ -1,6 +1,7 @@
 const express = require("express");
 const Course = require("../models/Course");
 const Quiz = require("../models/Quiz");
+const User = require("../models/User");
 const QuizResult = require('../models/QuizResult');
 const updateProgress = require('../middleware/UpgradeProgress'); 
 const authenticateJWT = require("../middleware/AuthenticateJWT");
